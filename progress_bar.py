@@ -9,14 +9,16 @@ class progress_bar(object):
         current_per = cur/total
         elapsed = time.clock() - start
         curbar = int(current_per * self.barlength)
-        bar = "\n[" + "=".join("" for tmp in range(curbar))
+        bar = "\n[" + "=".join("" for tmp in range(curbar)) #progress bar
         bar += ">"
-        bar += " ".join("" for tmp in range(self.barlength - curbar)) + "] "
+        bar += " ".join("" for tmp in range(self.barlength - curbar)) + "] " #spaces remaining in the progress bar
+        bar += bytetostr(cur/elapsed) + "/s, " #downloadspeed
+        bar += get_human_time() + " left"
 
     def print_end(self,*args): #arbitrary numbers of args
 
 def bytetostr(bits):
-    bits = float(bits)
+    #bits = float(bits)
     if  bits >= (1024 ** 4):   #convert from bits to terabytes
         terabytes = bits/ (1024**4)
         size = "%.2fTb" % terabytes
