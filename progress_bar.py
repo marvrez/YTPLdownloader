@@ -13,7 +13,8 @@ class progress_bar(object):
         bar += ">"
         bar += " ".join("" for tmp in range(self.barlength - curbar)) + "] " #spaces remaining in the progress bar
         bar += bytetostr(cur/elapsed) + "/s, " #downloadspeed
-        bar += get_human_time() + " left"
+        bar += get_human_time((total - cur) / (cur/elapsed)) + " left" #calculate time remaining
+        if
 
     def print_end(self,*args): #arbitrary numbers of args
 
