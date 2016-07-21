@@ -1,22 +1,30 @@
 import time
+import sys
 
 class progress_bar(object):
     def __init__(self,barlength = 25):
         self.barlength = barlength
-        self.position=  0
-        self.longest =   0
+        self.longest   = 0
+
     def print_progress(self,cur,total,start):
-        current_per = cur/total
-        elapsed = time.clock() - start
+        current_per = cur/total 
+        elapsed = time.clock() - start #calculate time elapsed
         curbar = int(current_per * self.barlength)
-        bar = "\n[" + "=".join("" for tmp in range(curbar)) #progress bar
+
+        #creation of the progress bar 
+        bar = "\r[" + "=".join("" for tmp in range(curbar)) #progress bar
         bar += ">"
         bar += " ".join("" for tmp in range(self.barlength - curbar)) + "] " #spaces remaining in the progress bar
         bar += bytetostr(cur/elapsed) + "/s, " #downloadspeed
         bar += get_human_time((total - cur) / (cur/elapsed)) + " left" #calculate time remaining
-        if
+
+        if len(bar) > self.longest: #find out spaces to overwrite
+            self.longest = len(bar)
+            bar += " ".join("" for tmp in range(self.longest - len(bar)))
+        sys.stdout.write(bar)
 
     def print_end(self,*args): #arbitrary numbers of args
+        sys.stdout.write("\r{0}\r".format((" " for tmp in range(self.longest)))) #clear line
 
 def bytetostr(bits):
     #bits = float(bits)
@@ -36,7 +44,7 @@ def bytetostr(bits):
         size = "%.2fb"  % bits
     return size
 
-def get_human_time(sec):
+def get_human_time(sec): #returns the time in a more reading-convenient way
     if sec >= 3600: #convert to hours
         return "%d hour(s)" % int(sec/3600)
     elif sec >= 60: #convert to minutes
