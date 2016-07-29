@@ -1,5 +1,6 @@
 import time
 import sys
+import re
 
 class progress_bar(object):
     def __init__(self,barlength = 25):
@@ -11,16 +12,16 @@ class progress_bar(object):
         elapsed = time.clock() - start #calculate time elapsed
         curbar = int(current_per * self.barlength)
 
-        #creation of the progress bar 
-        bar = "\r[" + "=".join("" for tmp in range(curbar)) #progress bar
+        #creating of the progress bar 
+        bar = "\r[" + "=".join("" for tmp in range(curbar + 1)) #progress bar
         bar += ">"
-        bar += " ".join("" for tmp in range(self.barlength - curbar)) + "] " #spaces remaining in the progress bar
-        bar += bytetostr(cur/elapsed) + "/s, " #downloadspeed
-        bar += get_human_time((total - cur) / (cur/elapsed)) + " left" #calculate time remaining
+        bar += " ".join("" for tmp2 in range(self.barlength - curbar)) + "] "#spaces remaining in the progress bar
+        bar += bytetostr(cur/elapsed) + "/s, " #downloadspeed, ds/dt
+        bar += get_human_time((total - cur) / (cur/elapsed)) + " left " #calculate time remaining 
 
         if len(bar) > self.longest: #find out spaces to overwrite
             self.longest = len(bar)
-            bar += " ".join("" for tmp in range(self.longest - len(bar)))
+            bar += " ".join("" for tmp in range(1+self.longest - len(bar)))
         sys.stdout.write(bar)
 
     def print_end(self,*args): #arbitrary numbers of args

@@ -4,6 +4,7 @@ import time
 import sys
 import re
 import os
+import requests
 #TODO: implement this for playlists too
 
 def download_video(url, folder):
@@ -20,7 +21,7 @@ def download_video(url, folder):
 
     #else tries to get the highest resolution available
     except Exception:
-        vid = sorted(yt.filter("mp4")[-1])
+        vid = yt.filter("mp4")[-1]
 
     #download video
     try:
@@ -32,17 +33,16 @@ def download_video(url, folder):
         print(yt.filename, "already exists in the directory. Skipping video...")
     
     #converts video to audio
-"""
+    #TODO: try converting to WAV before MP3?
     try:
         aud = "ffmpeg -i "+str(yt.filename) + ".mp4 " + str(yt.filename)+".mp3"
         os.system(aud)
         print("Succesfully converted",yt.filename, "to mp3!")
     except OSError:
-        print("There are some problems with the file names..")
-"""
+        print("There are some problems with the file name(s)..")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2 or len(sys.argv) > 3:
+    if len(sys.argv) < 2 or len(sys.argv) > 3: #usage #usage
         print("USAGE: python pl_downloader.py playlistURL OR python pl_downloader.py songFolder" )
         exit(1)
 
@@ -57,7 +57,8 @@ if __name__ == "__main__":
         try:
             os.makedirs(folder,exist_ok = True)
         except OSError as e:
-            print (e.reason)
+            print (e)
             exit(1)
 
         download_video(url, folder)
+
