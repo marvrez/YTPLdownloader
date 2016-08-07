@@ -1,19 +1,20 @@
 from progress_bar import progress_bar
-from pytube import YouTube
+from PLparser     import parse
+from pytube       import YouTube
 import time
 import sys
 import re
 import os
 import requests
-#TODO: implement this for playlists too
-#TODO: save it to a folder
+#TODO: fix decoding from utf-8
+
 
 def download_video(url, folder):
     try:
         yt = YouTube(url)
 
     except Exception as e:
-        print ("Error:", e.reason, "- skipping video with url:",url)
+        print ("Error:", e, "- skipping video with url:",url)
         return
 
     #video should be downloaded in 720p
@@ -53,13 +54,13 @@ def download_video(url, folder):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or len(sys.argv) > 3: #usage #usage
-        print("USAGE: python pl_downloader.py playlistURL OR python pl_downloader.py songFolder" )
+        print("USAGE: python pl_downloader.py URL OR python pl_downloader.py URL songFolder" )
         exit(1)
 
     else:
         url = sys.argv[1]
 
-        if "https://" not in url:
+        if not url.startswith("https://"):
             url = "https://%s" % (url)
 
         folder = os.getcwd() if len(sys.argv) != 3 else sys.argv[2] 
@@ -69,5 +70,19 @@ if __name__ == "__main__":
         except OSError as e:
             print (e)
             exit(1)
+        #if the given URL is of type youtube-playlist
+        if "playlist?" in url:
+            try:
+                urls = parse(url)
 
-        download_video(url, folder)
+            except Exception as e:
+                print(e.reason)
+
+            if urls:
+                for url in urls:
+                    download_video(url,folder)
+            print("We did it reddit! 4Head")
+        else:
+            download_video(url, folder)
+            print("We did it reddit! 4Head")
+
