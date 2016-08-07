@@ -6,6 +6,7 @@ import re
 import os
 import requests
 #TODO: implement this for playlists too
+#TODO: save it to a folder
 
 def download_video(url, folder):
     try:
@@ -31,15 +32,24 @@ def download_video(url, folder):
 
     except OSError:
         print(yt.filename, "already exists in the directory. Skipping video...")
+        return
     
     #converts video to audio
-    #TODO: try converting to WAV before MP3?
     try:
-        aud = "ffmpeg -i "+str(yt.filename) + ".mp4 " + str(yt.filename)+".mp3"
-        os.system(aud)
-        print("Succesfully converted",yt.filename, "to mp3!")
+
+            aud = "ffmpeg -i " + folder + "/" +  "\"" +  str(yt.filename) + "\"" + ".mp4 " + folder + "/" + "\""  + str(yt.filename) + "\"" + ".mp3"
+            print (aud)
+            os.system(aud)
+
+            if os.path.exists(folder +"\\" + yt.filename + ".mp4"):
+                os.remove(folder +"\\" + yt.filename + ".mp4")
+
+            print("Succesfully converted",yt.filename, "to mp3!")
+
     except OSError:
-        print("There are some problems with the file name(s)..")
+        print("There are some problems with the file name(s), skipping video..")
+        return
+
 
 if __name__ == "__main__":
     if len(sys.argv) < 2 or len(sys.argv) > 3: #usage #usage
@@ -61,4 +71,3 @@ if __name__ == "__main__":
             exit(1)
 
         download_video(url, folder)
-
